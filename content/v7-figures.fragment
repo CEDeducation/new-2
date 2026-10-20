@@ -1,0 +1,53 @@
+// Specific scientific illustrations for senior-secondary concept cards.
+const punnett = <>
+  {['AB','Ab','aB','ab'].map((g,i)=><g key={g}>{label(59+i*66,39,g)}{label(16,77+i*40,g)}</g>)}
+  {['AABB','AABb','AaBB','AaBb','AABb','AAbb','AaBb','Aabb','AaBB','AaBb','aaBB','aaBb','AaBb','Aabb','aaBb','aabb'].map((g,i)=><g key={i}><rect x={43+(i%4)*66} y={49+Math.floor(i/4)*40} width="61" height="36" rx="4" fill={g==='aabb'?'#926a8b':g.includes('aa')||g.includes('bb')?'#527c91':'#386e65'} stroke="#96bfb9"/><text x={73+(i%4)*66} y={72+Math.floor(i/4)*40} fontSize="10" textAnchor="middle" fill="#effffd">{g}</text></g>)}
+  {label(20,244,'AaBb × AaBb · gamete combinations')}
+</>;
+const nephronDetail = <>
+  <circle cx="91" cy="87" r="37" fill="#ca8497" stroke="#f1c3ce" strokeWidth="5"/>
+  <circle cx="91" cy="87" r="19" fill="none" stroke="#782a57" strokeWidth="5" strokeDasharray="5 4"/>
+  <path d="M129 87Q193 44 223 87Q251 123 223 141L191 170Q174 194 195 207Q215 218 233 194Q266 155 269 112L315 117V212" fill="none" stroke="#f3c3b0" strokeWidth="13" strokeLinecap="round"/>
+  <path d="M193 171Q174 194 195 207Q215 218 233 194" fill="none" stroke="#88c7f3" strokeWidth="6"/>
+  {label(15,29,'Glomerulus')}{label(155,64,'PCT')}{label(205,244,'Loop of Henle')}{label(276,96,'DCT')}{label(287,238,'Collecting duct')}
+</>;
+const alveolusDetail = <>
+  {[[130,112],[183,96],[232,121],[172,156]].map(([x,y],i)=><circle key={i} cx={x} cy={y} r="45" fill="#ba7086" fillOpacity=".72" stroke="#f0a7bb" strokeWidth="4"/>)}
+  <path d="M37 185Q73 235 128 222T220 220Q290 224 333 155" fill="none" stroke="#7db6e4" strokeWidth="14" strokeLinecap="round"/>
+  <path d="M110 176L110 205" stroke="#b3edd8" strokeWidth="5"/><path d="M219 190L219 217" stroke="#b3edd8" strokeWidth="5"/>
+  {label(14,37,'Alveolar air')}{label(14,252,'Pulmonary capillary')}{label(75,191,'O₂ → blood','#b6ffe0')}{label(214,178,'CO₂ → air','#ffd3b3')}
+</>;
+const transcriptionDetail = <>
+  {Array.from({length:8},(_,i)=>{const x=45+i*38;return <g key={i}><line x1={x} y1="85" x2={x} y2="127" stroke="#a7a0ed" strokeWidth="4"/><text x={x} y="78" fill="#c9bbff" textAnchor="middle" fontSize="14">{['A','T','G','C','C','A','T','G'][i]}</text><text x={x} y="143" fill="#8ce6d7" textAnchor="middle" fontSize="14">{['T','A','C','G','G','T','A','C'][i]}</text></g>})}
+  <path d="M22 104H340" stroke="#d2e5ff" strokeWidth="2" strokeDasharray="4 6"/><rect x="137" y="88" width="95" height="36" rx="13" fill="#b484ca" fillOpacity=".85" stroke="#efd7ff"/>
+  <path d="M190 126L231 200H325" fill="none" stroke="#f0ce94" strokeWidth="4"/>
+  {['A','U','G','C'].map((c,i)=><text key={i} x={237+i*29} y="192" fontSize="15" fill="#f0d39d">{c}</text>)}
+  {label(19,34,'DNA template · 3′ → 5′')}{label(32,234,'RNA polymerase produces RNA 5′ → 3′')}
+</>;
+const enthalpyDetail = <>
+  <path d="M53 27V231H337" fill="none" stroke="#ccdeef" strokeWidth="3"/><path d="M58 92H178" stroke="#f6b482" strokeWidth="7"/><path d="M219 171H326" stroke="#8be2bf" strokeWidth="7"/>
+  <path d="M179 95V168" stroke="#dbe7f5" strokeWidth="4" strokeDasharray="6 6"/><path d="M170 161l9 12 9-12" fill="none" stroke="#dbe7f5" strokeWidth="3"/>
+  {label(63,79,'Reactants')}{label(235,158,'Products')}{label(187,131,'ΔH < 0')}{label(7,24,'H')}{label(200,249,'Reaction progress')}
+</>;
+const equilibriumDetail = <>
+  <rect x="47" y="42" width="266" height="76" rx="16" fill="#173d52" stroke="#8ec6bf"/>
+  {label(67,79,'A + B','#ffd0aa')}{label(260,79,'C','#9ef9dd')}
+  <path d="M135 69H233M233 89H135" stroke="#d3e3f6" strokeWidth="4"/><path d="M225 60l9 9-9 9M143 81l-9 8 9 8" fill="none" stroke="#d3e3f6" strokeWidth="3"/>
+  <path d="M44 220H334M44 220V143" stroke="#bbd4e5" strokeWidth="2"/>
+  <path d="M47 158Q85 184 135 187T240 192H329" stroke="#f3ba95" strokeWidth="4" fill="none"/>
+  <path d="M47 211Q87 194 135 190T240 192H329" stroke="#86e5c5" strokeWidth="4" fill="none"/>
+  {label(16,253,'Rates equal at equilibrium, not concentrations')}
+</>;
+const activationDetail = <>
+  <path d="M42 29V223H336" stroke="#d2d9ef" strokeWidth="2" fill="none"/>
+  <path d="M44 175Q100 173 132 78Q164 30 197 80Q245 150 324 139" fill="none" stroke="#eda578" strokeWidth="4"/>
+  <path d="M44 175Q95 173 131 129Q161 105 196 128Q249 150 324 139" fill="none" stroke="#87ebcc" strokeWidth="4"/>
+  {label(200,53,'Uncatalysed')}{label(192,109,'Catalysed')}{label(70,231,'Reaction coordinate')}{label(7,26,'E')}
+</>;
+const nernstDetail = <>
+  <path d="M58 87V208h89V87M211 87V208h91V87" fill="#1e4867" stroke="#acd4e4" strokeWidth="4"/>
+  <rect x="62" y="145" width="81" height="58" fill="#b5b7f8" opacity=".5"/><rect x="215" y="145" width="83" height="58" fill="#78e7ca" opacity=".55"/>
+  <path d="M88 123V33H272V123" fill="none" stroke="#d3e0f4" strokeWidth="4"/>
+  <path d="M140 122V72H218V122" fill="none" stroke="#e6ca93" strokeWidth="8"/>
+  {label(78,24,'e⁻ →')}{label(70,232,'Zn / Zn²⁺')}{label(217,232,'Cu²⁺ / Cu')}{label(111,66,'Salt bridge')}
+</>;

@@ -1,0 +1,29 @@
+name: OpenLab build and scientific checks
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  production-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Offline TypeScript/JSX syntax check
+        run: npm run qa:syntax
+      - name: Isolated billing TypeScript checks
+        run: npm run qa:commercial-types
+      - name: Typecheck entire project
+        run: npm run typecheck
+      - name: Scientific and integration regressions
+        run: npm run unified:test
+      - name: Verify production Next.js bundle
+        run: npm run build
