@@ -13,7 +13,7 @@ export default function MixtureStudio({complete,addObservation}:LabProps){
  const [message,setMessage]=useState('Drag the magnet across the mixture. Iron moves toward it; sulfur does not.');
  const [layer,setLayer]=useState<'macro'|'micro'>('macro');
  const surface=useRef<SVGSVGElement|null>(null), dragging=useRef(false),previous=useRef({x:365,y:76});
- const reactionTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
+ const reactionTimer=useRef<number|null>(null);
  useEffect(()=>()=>{if(reactionTimer.current!==null)clearTimeout(reactionTimer.current);},[]);
  const counts=inventory(particles);
  const update=(p:{x:number;y:number})=>{
