@@ -1,0 +1,37 @@
+/* Run with `node qa/science-tests.cjs` after compiling the engines into .qa-js. */
+const assert=require('node:assert/strict');
+const {flightStats,flightPoint,flightDuration}=require('../.qa-js/motion-engine');
+const {AMINO_ACIDS,REFERENCE_DNA,transcribe,complement,translate,mutationType}=require('../.qa-js/genetics-engine');
+const {initialTransport,transportStep,totalParticles}=require('../.qa-js/transport-engine');
+const {lensImage}=require('../.qa-js/lens-engine');
+const {solveBuiltCircuit}=require('../.qa-js/build-circuit-engine');
+const {REACTIONS,atomCounts,isBalanced}=require('../.qa-js/reaction-engine');
+const {TARGETS,graphFor,validateGraph,matchesTarget,identifyGraph}=require('../.qa-js/bond-engine');
+const {calculateDC}=require('../.qa-js/circuit-engine');
+let pass=0;
+function test(label,fn){try{fn();++pass;}catch(err){throw Error(`${label}: ${err.message}`,{cause:err})}}
+const approx=(a,b,tol=1e-8)=>assert.ok(Math.abs(a-b)<=tol,`${a} != ${b}`);
+for(const angle of [15,30,45,60,75])test(`motion range angle ${angle}`,()=>{const p={speed:30,angle,gravity:9.81},s=flightStats(p);approx(flightPoint(p,s.duration).y,0);approx(flightPoint(p,s.peakTime).y,s.peak);for(let step=0;step<=20;step++){const z=flightPoint(p,s.duration*step/20);approx(z.kineticPerKg+z.potentialPerKg,450,1e-5);assert.ok(z.y>=0)} });
+test('motion complementary angles',()=>approx(flightStats({speed:40,angle:30,gravity:9.81}).range,flightStats({speed:40,angle:60,gravity:9.81}).range));
+test('motion invalid',()=>{assert.throws(()=>flightDuration({speed:1,angle:-3,gravity:9.81}));assert.throws(()=>flightDuration({speed:1,angle:45,gravity:0}))});
+test('genetics 64 codons',()=>{assert.equal(Object.keys(AMINO_ACIDS).length,64);for(const k of Object.keys(AMINO_ACIDS))assert.match(k,/^[ACGU]{3}$/)});
+test('DNA complement and transcription',()=>{assert.equal(complement('ATGC'),'TACG');assert.equal(transcribe('ATGC'),'AUGC');assert.throws(()=>transcribe('ABCG'))});
+test('DNA reference product',()=>{assert.deepEqual(translate(REFERENCE_DNA).amino,['Met','Ala','Glu','Phe']);assert.equal(translate(REFERENCE_DNA).stopped,true)});
+test('genetics mutation classifications',()=>{assert.equal(mutationType(REFERENCE_DNA,REFERENCE_DNA),'unchanged');assert.equal(mutationType(REFERENCE_DNA,'ATGGCCGAATTTTAA'),'silent');assert.equal(mutationType(REFERENCE_DNA,'ATGGATGAATTTTAA'),'missense');assert.equal(mutationType(REFERENCE_DNA,'ATGTAAGAATTTTAA'),'nonsense');assert.equal(mutationType(REFERENCE_DNA,'ACGGCTGAATTTTAA'),'start lost')});
+test('transporter conservation solute closed',()=>{let s=initialTransport();const t=totalParticles(s);for(let i=0;i<700;i++)s=transportStep(s,{solutePermeable:false,temperature:30},Math.random);assert.deepEqual(totalParticles(s),t);assert.equal(s.insideSolute,35);assert.equal(s.outsideSolute,75);assert.ok(s.insideWater>=25&&s.insideWater<=155)});
+test('transporter conservation solute open',()=>{let s=initialTransport(10,130);const t=totalParticles(s);for(let i=0;i<700;i++){s=transportStep(s,{solutePermeable:true,temperature:55},Math.random);assert.deepEqual(totalParticles(s),t);assert.ok(s.insideSolute>=0&&s.outsideSolute>=0)}});
+test('transport invalid',()=>{assert.throws(()=>initialTransport(-4,30));assert.throws(()=>transportStep(initialTransport(),{solutePermeable:false,temperature:150}))});
+test('lens convex real',()=>{const x=lensImage(30,90,12);approx(x.imageDistance,45);approx(x.magnification,-.5);approx(x.imageHeight,-6);assert.equal(x.real,true)});
+test('lens convex virtual',()=>{const x=lensImage(40,20,12);approx(x.imageDistance,-40);approx(x.magnification,2);assert.equal(x.real,false)});
+test('lens diverging',()=>{const x=lensImage(-30,60,12);approx(x.imageDistance,-20);approx(x.magnification,1/3);assert.equal(x.real,false)});
+test('lens focal point image infinity',()=>{assert.equal(lensImage(40,40,12).imageDistance,Infinity)});
+for(const mode of ['series','parallel'])test(`circuit equivalence ${mode}`,()=>{const x=solveBuiltCircuit(12,6,12,mode,true,true,true);if(mode==='series'){approx(x.equivalent,18);approx(x.i1,2/3);approx(x.i2,2/3);approx(x.v1,4);approx(x.v2,8)}else{approx(x.equivalent,4);approx(x.current,3);approx(x.i1,2);approx(x.i2,1);approx(x.v1,12);approx(x.v2,12)}approx(x.power,12*x.current);approx(x.energy,x.power*60)});
+test('circuit missing series branch',()=>{const x=solveBuiltCircuit(12,6,12,'series',true,true,false);assert.equal(x.conducting,false);assert.equal(x.equivalent,Infinity);assert.equal(x.current,0)});
+test('circuit missing parallel branch',()=>{const x=solveBuiltCircuit(12,6,12,'parallel',true,true,false);assert.equal(x.equivalent,6);assert.equal(x.i1,2);assert.equal(x.i2,0);approx(x.power,24)});
+test('circuit both parallel missing',()=>{const x=solveBuiltCircuit(12,6,12,'parallel',true,false,false);assert.equal(x.equivalent,Infinity);assert.equal(x.current,0)});
+test('open switch',()=>{assert.equal(solveBuiltCircuit(12,6,12,'parallel',false,true,true).current,0);assert.equal(calculateDC(12,6,12,'series',false).current,0)});
+test('circuit nonphysical inputs',()=>{assert.throws(()=>solveBuiltCircuit(12,-6,2,'parallel',true,true,true));assert.throws(()=>calculateDC(12,0,3,'series',true))});
+for(const reaction of REACTIONS)test(`reaction ${reaction.name}`,()=>{assert.equal(isBalanced(reaction,reaction.solution),true);const lhs=atomCounts(reaction,reaction.solution,'reactant');const rhs=atomCounts(reaction,reaction.solution,'product');assert.deepEqual(lhs,rhs);assert.equal(isBalanced(reaction,reaction.species.map(()=>1)),reaction.name==='Burn methane'?false:reaction.name==='Iron oxidation'?false:reaction.name==='Make water'?false:reaction.name==='Synthesize ammonia'?false:false)});
+test('reaction invalid coefficients',()=>{assert.throws(()=>atomCounts(REACTIONS[0],[1,2],'reactant'));assert.throws(()=>atomCounts(REACTIONS[0],[-1,1,1],'reactant'))});
+for(const target of TARGETS)test(`bond ${target.id}`,()=>{const graph=graphFor(target);assert.equal(validateGraph(graph),null);assert.equal(matchesTarget(graph,target),true);assert.equal(identifyGraph(graph).id,target.id)});
+console.log(`PASS ${pass} science checks: molecular graphs, chemistry conservation, genetic code and mutations, membrane particle conservation, ideal mechanics, optics, electrical networks.`);

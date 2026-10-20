@@ -1,0 +1,212 @@
+
+> openlab-unified@7.0.0-lab-rebuild-candidate unified:test
+> node scripts/integration-regression.mjs && npm run scientific:regression && npm run junior:test && npm run junior:release-tests
+
+PASS unified routes, Research and Junior navigation, shared account gate and retained scientific workspaces.
+
+> openlab-unified@7.0.0-lab-rebuild-candidate scientific:regression
+> node scripts/scientific-regression.mjs
+
+Scientific regression: PASS
+  Sequence normalization: raw 4406 chars -> 4361 bp, 54.0% GC
+  pUC19: 2686 bp, 50.6329% GC, canonical MCS restriction positions verified
+  pUC19 strand/origin/source annotations + CDS starts verified
+  Translation-table and GenBank CDS qualifier guards verified
+  Type IIS recognition/cut-offset metadata verified
+  Aspirin/caffeine/acetaminophen/ibuprofen reference structures verified by formula + monoisotopic mass
+
+> openlab-unified@7.0.0-lab-rebuild-candidate junior:test
+> bash qa/run-science-tests.sh && tsc --target ES2021 --module commonjs --skipLibCheck --outDir .qa-js components/junior/theory-data.ts components/junior/theory-engine.ts && node qa/theory-tests.cjs
+
+PASS 41 science checks: molecular graphs, chemistry conservation, genetic code and mutations, membrane particle conservation, ideal mechanics, optics, electrical networks.
+PASS strong-acid titration at 0 mL has pH 1
+PASS equivalence is neutral pH 7
+PASS excess strong base yields basic pH
+PASS pH rises monotonically through titration
+PASS acid/base input validation
+PASS titration CSV has headers
+PASS ideal gas PV = nRT units
+PASS ideal gas Boyle and Charles relations
+PASS molecular RMS speed follows sqrt(T)
+PASS one-locus gametes
+PASS monohybrid 1:2:1 genotype
+PASS dihybrid 16 genotype combinations
+PASS dihybrid 9:3:3:1 phenotype ratios
+PASS seeded population deterministic
+PASS invalid gamete genotypes rejected
+PASS known ion diagnostic results
+PASS unknown combination returns non-diagnostic
+PASS every sample has at least one reference positive
+PASS hydrocarbon: methane
+PASS hydrocarbon: ethene
+PASS hydrocarbon: ethyne
+PASS alcohol: ethanol formula
+PASS aldehyde: ethanal formula
+PASS acid: ethanoic acid formula
+PASS unsupported multiple C=C bonds blocked
+PASS carbon valence exceeding 4 rejected
+PASS no light no photosynthesis
+PASS no CO2 no photosynthesis
+PASS no water no photosynthesis
+PASS adding light increases output at fixed factors
+PASS temperature optimum higher than extreme cold
+PASS photosynthesis bounds and export
+PASS 32 new lab science checks
+PASS Exactly 50 original topic specifications
+PASS Chemistry 25 / Biology 25
+PASS Every topic has stated learning outcome and interaction
+PASS All grade tiers within 9–12
+PASS Mixture has equal Fe and S inventory
+PASS Moving magnet affects iron only
+PASS Magnet collecting does not change atom count
+PASS FeS preserves Fe and S atoms exactly
+PASS Collected Fe is excluded from reaction
+PASS Aufbau blank state is empty
+PASS Pauli prohibits same spin in an orbital
+PASS Aufbau prohibits filling 2p before 1s/2s
+PASS Hund prohibits premature pairing
+PASS Carbon 6 electrons occupy separate p orbitals
+PASS Neon gives full 2p shell
+PASS Chlorine gives 3p5
+PASS Calcium fills 4s2
+PASS Aufbau remove-last yields one fewer electron
+PASS Nernst standard Zn/Cu gives 1.10 V
+PASS Increasing Zn2+ lowers cell EMF
+PASS Increasing Cu2+ increases cell EMF
+PASS Gibbs energy is negative for spontaneous cell
+PASS Nernst concentration validation
+PASS Nernst temperature dependence for nonunity quotient
+PASS Dragged atom connects without jumping to old position
+PASS Drag cannot exceed allowed neutral valence
+26 progressive lab and bonding regression checks passed
+PASS Conservation of mass: sealed system
+PASS pH: neutrality and Kw
+PASS Acid dilution approaches neutral
+PASS Ideal molarity
+PASS Neutralization calorimetry enthalpy and mass
+PASS Equilibrium model satisfies mass balance
+PASS Freezing point depression
+PASS Cardiac output
+PASS Ventilation correction
+PASS Nephron ADH increases reabsorption
+PASS Hardy-Weinberg proportions sum to one
+PASS Selection maintains valid allele frequencies
+PASS Linkage recombination
+PASS Illustrative trophic progression
+PASS Reflex conduction delay
+PASS Redox equivalence by 2:5 ratio
+PASS Stomatal flux responds to humidity
+PASS Enzyme activity near optimum exceeds far pH
+PASS Passive transport conserves particles
+PASS ATP-driven transport uses no phantom particles
+PASS Active transport conserves particles and ATP
+
+21 advanced science model tests passed
+PASS 68 chapters, 340 scientific concepts, 680 unique-answer question checks, progress validation
+
+> openlab-unified@7.0.0-lab-rebuild-candidate junior:release-tests
+> bash qa/run-release-checks.sh
+
+[1/3] Physics, chemistry and biology model invariants
+PASS 41 science checks: molecular graphs, chemistry conservation, genetic code and mutations, membrane particle conservation, ideal mechanics, optics, electrical networks.
+PASS strong-acid titration at 0 mL has pH 1
+PASS equivalence is neutral pH 7
+PASS excess strong base yields basic pH
+PASS pH rises monotonically through titration
+PASS acid/base input validation
+PASS titration CSV has headers
+PASS ideal gas PV = nRT units
+PASS ideal gas Boyle and Charles relations
+PASS molecular RMS speed follows sqrt(T)
+PASS one-locus gametes
+PASS monohybrid 1:2:1 genotype
+PASS dihybrid 16 genotype combinations
+PASS dihybrid 9:3:3:1 phenotype ratios
+PASS seeded population deterministic
+PASS invalid gamete genotypes rejected
+PASS known ion diagnostic results
+PASS unknown combination returns non-diagnostic
+PASS every sample has at least one reference positive
+PASS hydrocarbon: methane
+PASS hydrocarbon: ethene
+PASS hydrocarbon: ethyne
+PASS alcohol: ethanol formula
+PASS aldehyde: ethanal formula
+PASS acid: ethanoic acid formula
+PASS unsupported multiple C=C bonds blocked
+PASS carbon valence exceeding 4 rejected
+PASS no light no photosynthesis
+PASS no CO2 no photosynthesis
+PASS no water no photosynthesis
+PASS adding light increases output at fixed factors
+PASS temperature optimum higher than extreme cold
+PASS photosynthesis bounds and export
+PASS 32 new lab science checks
+PASS Exactly 50 original topic specifications
+PASS Chemistry 25 / Biology 25
+PASS Every topic has stated learning outcome and interaction
+PASS All grade tiers within 9–12
+PASS Mixture has equal Fe and S inventory
+PASS Moving magnet affects iron only
+PASS Magnet collecting does not change atom count
+PASS FeS preserves Fe and S atoms exactly
+PASS Collected Fe is excluded from reaction
+PASS Aufbau blank state is empty
+PASS Pauli prohibits same spin in an orbital
+PASS Aufbau prohibits filling 2p before 1s/2s
+PASS Hund prohibits premature pairing
+PASS Carbon 6 electrons occupy separate p orbitals
+PASS Neon gives full 2p shell
+PASS Chlorine gives 3p5
+PASS Calcium fills 4s2
+PASS Aufbau remove-last yields one fewer electron
+PASS Nernst standard Zn/Cu gives 1.10 V
+PASS Increasing Zn2+ lowers cell EMF
+PASS Increasing Cu2+ increases cell EMF
+PASS Gibbs energy is negative for spontaneous cell
+PASS Nernst concentration validation
+PASS Nernst temperature dependence for nonunity quotient
+PASS Dragged atom connects without jumping to old position
+PASS Drag cannot exceed allowed neutral valence
+26 progressive lab and bonding regression checks passed
+PASS Conservation of mass: sealed system
+PASS pH: neutrality and Kw
+PASS Acid dilution approaches neutral
+PASS Ideal molarity
+PASS Neutralization calorimetry enthalpy and mass
+PASS Equilibrium model satisfies mass balance
+PASS Freezing point depression
+PASS Cardiac output
+PASS Ventilation correction
+PASS Nephron ADH increases reabsorption
+PASS Hardy-Weinberg proportions sum to one
+PASS Selection maintains valid allele frequencies
+PASS Linkage recombination
+PASS Illustrative trophic progression
+PASS Reflex conduction delay
+PASS Redox equivalence by 2:5 ratio
+PASS Stomatal flux responds to humidity
+PASS Enzyme activity near optimum exceeds far pH
+PASS Passive transport conserves particles
+PASS ATP-driven transport uses no phantom particles
+PASS Active transport conserves particles and ATP
+
+21 advanced science model tests passed
+[2/3] Curriculum data, quiz choices and grading
+PASS 68 chapters, 340 scientific concepts, 680 unique-answer question checks, progress validation
+[3/5] New concept-card depth checks
+PASS detailed card: 256 words + application
+PASS detailed card: 237 words + application
+PASS detailed card: 253 words + application
+PASS detailed card: 252 words + application
+Four illustration-backed detailed concept cards validated
+[4/5] Isolated new component types
+PASS: isolated TypeScript type check of new components and engines (stubbed React declarations).
+[5/6] Junior navigation integrity
+PASS 4 new labs, navigation, roadmap, CSS import and Research + Junior wiring
+[6/7] Blueprint links and honest completion states
+PASS: 23 dedicated interactive educational models, 27 related lab links, 0 catalogue topics without a link.
+NOTICE: related links do not equal full blueprint implementation or verified PhET/Molecular Workbench parity.
+[7/7] Standalone preview syntax
+
+All module-level automated checks passed. Run the full Next.js build before release.

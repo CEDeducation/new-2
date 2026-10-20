@@ -1,0 +1,40 @@
+{
+  "name": "openlab-unified",
+  "version": "8.1.0-commercial-foundation",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "prebuild": "node scripts/scientific-regression.mjs",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "postinstall": "node scripts/copy-rdkit-assets.mjs",
+    "scientific:regression": "node scripts/scientific-regression.mjs",
+    "junior:test": "bash qa/run-science-tests.sh && tsc --target ES2021 --module commonjs --skipLibCheck --outDir .qa-js components/junior/theory-data.ts components/junior/theory-engine.ts && node qa/theory-tests.cjs",
+    "unified:test": "node scripts/integration-regression.mjs && npm run scientific:regression && npm run junior:test && npm run junior:release-tests && npm run junior:v7-test && npm run qa:flagship && npm run qa:commercial && npm run qa:commercial-types && npm run qa:commercial-routes && npm run qa:commercial-ui-types",
+    "junior:release-tests": "bash qa/run-release-checks.sh && npm run qa:skeleton && npm run qa:syntax",
+    "junior:v7-test": "bash qa/run-v7-audit.sh",
+    "qa:syntax": "node qa/syntax-audit.cjs",
+    "qa:skeleton": "tsc --target ES2021 --module commonjs --skipLibCheck --outDir .qa-js components/junior/skeleton-engine.ts && node qa/skeleton-tests.cjs",
+    "launch:gate": "node qa/launch-gate.cjs",
+    "qa:flagship": "tsc --target ES2021 --module commonjs --skipLibCheck --outDir .qa-js components/junior/cardiac-engine.ts components/junior/gene-expression-engine.ts components/junior/bond-engine.ts && node qa/v9-engines-tests.cjs && python qa/check-v9-types.py",
+    "qa:commercial": "node qa/commercial-security-tests.cjs",
+    "commercial:status": "node qa/commercial-readiness.cjs",
+    "qa:commercial-types": "python qa/check-commercial-types.py",
+    "qa:commercial-routes": "node qa/commercial-routes-tests.cjs",
+    "qa:commercial-ui-types": "python qa/check-commercial-ui-types.py"
+  },
+  "dependencies": {
+    "next": "14.2.35",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "@rdkit/rdkit": "2026.3.6",
+    "3dmol": "2.5.5"
+  },
+  "devDependencies": {
+    "@types/node": "20.19.17",
+    "@types/react": "18.3.31",
+    "@types/react-dom": "18.3.7",
+    "typescript": "5.9.2"
+  }
+}

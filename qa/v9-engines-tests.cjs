@@ -1,0 +1,52 @@
+'use strict';
+const assert=require('node:assert/strict');
+const cardiac=require('../.qa-js/cardiac-engine.js');
+const gene=require('../.qa-js/gene-expression-engine.js');
+const bond=require('../.qa-js/bond-engine.js');
+let checks=0;
+const ok=(condition,message)=>{assert.ok(condition,message);checks++};
+const close=(a,b,eps=1e-8)=>ok(Math.abs(a-b)<eps,`Expected ${a} close to ${b}`);
+const m=cardiac.heartMeasurements(cardiac.DEFAULT_HEART_INPUTS);
+close(m.forwardOutputLMin,5.184);close(m.ventricularStrokeVolumeMl,72);
+close(m.endSystolicVolumeMl,48);close(m.regurgitantVolumeMl,0);
+close(m.beatDurationSeconds,60/72);
+for(const rate of [35,60,90,120,180])for(const ef of [.25,.4,.6,.8])for(const leak of [0,.2,.6]){
+ const x=cardiac.heartMeasurements({heartRate:rate,endDiastolicVolume:130,ejectionFraction:ef,mitralRegurgitation:leak});
+ close(x.forwardStrokeVolumeMl+x.regurgitantVolumeMl,x.ventricularStrokeVolumeMl);
+ close(x.endDiastolicVolume,x.endSystolicVolumeMl+x.ventricularStrokeVolumeMl);
+ close(x.forwardOutputLMin,x.bpm*x.forwardStrokeVolumeMl/1000);
+}
+for(const t of [0,.1,.3,.55,.75,.999]){
+ const valves=cardiac.heartValves(cardiac.heartPhase(t));
+ ok(!(valves.tricuspid&&valves.pulmonary),'Tricuspid and pulmonary cannot be open simultaneously');
+ ok(!(valves.mitral&&valves.aortic),'Mitral and aortic cannot be open simultaneously');
+}
+ok(cardiac.heartPhase(.2)==='ventricular-systole');
+ok(cardiac.heartPhase(.6)==='isovolumetric-relaxation');
+ok(cardiac.makeEcgPoints().length===100);
+ok(cardiac.makeEcgPoints().every(p=>Number.isFinite(p.y)));
+ok(gene.transcribeCodingStrand('ATGC')==='AUGC');
+ok(gene.complementaryTemplate('ATGC')==='TACG');
+ok(gene.processedRNA(gene.EXAMPLE_GENE,[])==='AUGGCUGUACCUAGAAAGGUUUUUGA');
+ok(gene.REFERENCE_MRNA==='AUGGCUAAAGGUUUUUGA');
+ok(gene.translateRNA(gene.REFERENCE_MRNA).protein==='M-A-K-G-F');
+ok(gene.translateRNA(gene.REFERENCE_MRNA).stopped);
+ok(gene.translateRNA('AUGUAAAGG').protein==='M');
+ok(gene.mutationEffect(gene.REFERENCE_MRNA,gene.REFERENCE_MRNA)==='no-change');
+ok(gene.mutationEffect('AUGGCUUAA','AUGGCCUAA')==='silent');
+ok(gene.mutationEffect('AUGGCUUAA','AUGGUUUAA')==='missense');
+ok(gene.mutationEffect('AUGGCUUAA','AUGUAAUAA')==='nonsense');
+ok(gene.mutationEffect('AUGGCUUAA','AUGGCUCAA')==='stop-loss');
+ok(gene.mutationEffect('AUGGCUUAA','ACGGCUUAA')==='start-loss');
+ok(Object.keys(gene.AMINO_ACIDS).length>=20);
+let empty={atoms:[],bonds:[]};
+let res=bond.dropPaletteAtom(empty,'O',1,{x:450,y:250});
+ok(res.graph.atoms.length===1 && res.bondedTo===null);
+res=bond.dropPaletteAtom(res.graph,'H',2,{x:490,y:260});
+ok(res.graph.atoms.length===2 && res.graph.bonds.length===1 && res.bondedTo===1);
+res=bond.dropPaletteAtom(res.graph,'H',3,{x:465,y:215});
+ok(res.graph.bonds.length===2);
+ok(bond.validateGraph(res.graph)===null);
+const full=bond.dropPaletteAtom(res.graph,'H',4,{x:460,y:248});
+ok(Boolean(full.error)&&full.graph.atoms.length===3);
+console.log(`v9 cardiovascular, RNA and palette-drag engine checks passed: ${checks}`);
